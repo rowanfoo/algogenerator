@@ -91,8 +91,6 @@ private  void   insertdata(String code)throws Exception{
 
 
     public void  importAllData() {
-
-
         runningStatus.setImportstatus("");
        runningStatus.setRsistatus("");
         runningStatus.setAlgostatus("");

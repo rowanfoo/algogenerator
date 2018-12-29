@@ -4,14 +4,17 @@ import com.dharma.algogenerator.data.entity.CoreStock;
 import com.dharma.algogenerator.data.repo.DataRepo;
 import com.dharma.algogenerator.data.repo.StockRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @SpringBootApplication
 
@@ -25,7 +28,7 @@ public class AlgogeneratorApplication {
     StockRepo stock ;
 
 
-
+@Value("${holidays}") String holidays;
 
     @Bean
     public ArrayList<String> allasxcodes(){
@@ -45,7 +48,22 @@ public class AlgogeneratorApplication {
 
     }
 
-    public static void main(String[] args) {
+    @Bean
+    public ArrayList<LocalDate> holidays() {
+        ArrayList<LocalDate> arr = new ArrayList<>();
+        System.out.println("---- HOLIDAYS  ------" + holidays );
+        StringTokenizer st = new StringTokenizer(holidays ,",");
+        System.out.println("---- Split by space ------");
+
+        while (st.hasMoreTokens()) {
+           // System.out.println(st.nextElement());
+            arr.add( (LocalDate.parse(st.nextToken() )));
+        }
+        return arr;
+
+    }
+
+        public static void main(String[] args) {
         SpringApplication.run(AlgogeneratorApplication.class, args);
     }
 }
