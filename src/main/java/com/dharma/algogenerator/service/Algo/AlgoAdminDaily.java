@@ -13,6 +13,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,13 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class AlgoAdminDaily {
 
     @Autowired
@@ -56,7 +61,7 @@ public class AlgoAdminDaily {
 
 
 
-    public void executeAll() {
+    public void executeAll() throws Exception{
 //        Method[] allMethods = this.getClass().getDeclaredMethods();
 //        Object[] parameters = { null };
 //        for (Method m : allMethods) {
@@ -69,45 +74,76 @@ public class AlgoAdminDaily {
 //            }
 //        }
 
-       // breakRoundNumber();
-        consequitveDayFallStr();
-        downGreater40Percent();
-        fiftyDayDistance();
-       // fiftyDayless(0.2);
-        fallWithLowVolumeStrReplace();
-        movingAveragetwoHundred();
-        queryDsltwoHundredCrossFourHundred(0.01,0.05);
-        queryDslLowRSI();
-        queryDslfiftyDayless(0.2);
-        down4PercenteEst();
-        greaterVolAvg(3);
+        System.out.println ("---------------------START ALGO ---------------> ");
+        log.info("-----------------START ALGO-------------- ");
+
+
+            List<CompletableFuture> arr = new ArrayList<>();
+        arr.add(CompletableFuture.runAsync(() ->  consequitveDayFallStr()));
+        arr.add(CompletableFuture.runAsync(() ->  downGreater40Percent()));
+        arr.add(CompletableFuture.runAsync(() ->  fiftyDayDistance()));
+        arr.add(CompletableFuture.runAsync(() ->  fallWithLowVolumeStrReplace()));
+        arr.add(CompletableFuture.runAsync(() ->  movingAveragetwoHundred()));
+        arr.add(CompletableFuture.runAsync(() ->   queryDsltwoHundredCrossFourHundred(0.01,0.05)));
+        arr.add(CompletableFuture.runAsync(() ->  queryDslLowRSI()));
+        arr.add(CompletableFuture.runAsync(() ->  down4PercenteEst()));
+        arr.add(CompletableFuture.runAsync(() ->   greaterVolAvg(3)));
+        arr.add(CompletableFuture.runAsync(() ->   queryDslfiftyDayless(-0.2)));
+
+
+        CompletableFuture.allOf(arr.toArray(new  CompletableFuture[arr.size() ])).get();
+
+
+
+//        //    breakRoundNumber();
+//        consequitveDayFallStr();
+//        downGreater40Percent();
+//        log.info("-----------------DONE ALGO 3-------------- ");
+//
+//        fiftyDayDistance();
+//       // fiftyDayless(0.2);
+//        fallWithLowVolumeStrReplace();
+//        movingAveragetwoHundred();
+//        log.info("-----------------DONE ALGO 6-------------- ");
+//
+//        queryDsltwoHundredCrossFourHundred(0.01,0.05);
+//        queryDslLowRSI();
+//        queryDslfiftyDayless(0.2);
+//        log.info("-----------------DONE ALGO 9-------------- ");
+//
+//        down4PercenteEst();
+//        greaterVolAvg(3);
+//        System.out.println ("---------------------DONE ALL ALGO ---------------> ");
+//        log.info("-----------------DONE ALL ALGO-------------- ");
 
     }
 
 //// TODO: 3/26/2018  cant get to work
-
-    public void breakRoundNumber(){
-        System.out.println ("breakRoundNumber ---------------> ");
-
-        allasxcodes.forEach((a)->{
-        List<Object[]> coreData = datarepo.breakRoundNumber(a+".AX");
-
-        for (Object[] result : coreData) {
-           // System.out.println ("breakRoundNumber ---------------> "+result[0] + " " + result[1] + " - " + result[2]);
-
-            TechTechstr str = new TechTechstr((String)result[0] , ((java.sql.Date)result[1]).toLocalDate(), 23);
-            //str.setClose(Double.parseDouble( result[2]+""));
-            //str.setOpen(Double.parseDouble( result[3]+""));
-            str.setClose((Double) result[2]);
-            str.setOpen((Double)result[3]);
-
-            techStrRepo.save(str);
-            System.out.println ("breakRoundNumber ---------------> "+str);
-
-        }
-
-        });
-    }
+//2019-01-03  dont seem to be working
+//    public void breakRoundNumber(){
+//        System.out.println ("breakRoundNumber ---------------> ");
+//
+//        allasxcodes.forEach((a)->{
+//        List<Object[]> coreData = datarepo.breakRoundNumber(a+".AX");
+//            System.out.println ("breakRoundNumber ----code-----------> "+a+".AX");
+//        for (Object[] result : coreData) {
+//           // System.out.println ("breakRoundNumber ---------------> "+result[0] + " " + result[1] + " - " + result[2]);
+//            System.out.println ("breakRoundNumber ----PRICE-----------> "+result[0] + " : " + result[0].getClass().getName()  + " : "  + result[1].getClass().getName() + " : "  + result[1] );
+//
+//            TechTechstr str = new TechTechstr(((Double)result[0]).toString() , ((java.sql.Date)result[1]).toLocalDate(), 23);
+//
+//            //str.setClose(Double.parseDouble( result[2]+""));
+//            //str.setOpen(Double.parseDouble( result[3]+""));
+//            str.setClose((Double) result[2]);
+//            str.setOpen((Double)result[3]);
+//
+//            techStrRepo.save(str);
+//            System.out.println ("breakRoundNumber ---------------> "+str);
+//
+//        }
+//
+//        });
+//    }
 
 
     public void downGreater40Percent(){
@@ -136,13 +172,16 @@ public class AlgoAdminDaily {
         });
 
     }
+    public void enddayvolgreaterfourty() {
+
+     //   enddayvolgreaterfourty
+    }
 
 
 
     public void consequitveDayFallStr () {
         System.out.println ("consequitveDayFallStr ---------------> ");
-
-        LocalDate mydate = FormatUtil.getWorkDay(getCacheDate(), 7);
+        LocalDate mydate = FormatUtil.getWorkDay(getCacheDate(), 6);
         List<Object[]> coreData = datarepo.consequitveDayFallStr(mydate.toString());
 
         for (Object[] result : coreData) {
@@ -160,6 +199,8 @@ public class AlgoAdminDaily {
 
     }
     public void  movingAveragetwoHundred(){
+        System.out.println("------movingAveragetwoHundred---------" );
+
         List<Object[]> coreData = datarepo.movingAveragebetween(MovingAverage.onehundredfifty,0.005,0.05);
 
         for (Object[] result : coreData) {
@@ -214,6 +255,7 @@ public class AlgoAdminDaily {
     // 200 cross 400
     public void  queryDsltwoHundredCrossFourHundred(double start , double end ){
         System.out.println("---------queryDsltwoHundredCrossFourHundred-------->  " );
+
         NumberPath<Double> fourhundred = QCoreData.coreData.fourhundred;
         NumberPath<Double> twohundred = QCoreData.coreData.twohundred;
 
@@ -271,10 +313,11 @@ public class AlgoAdminDaily {
     public void  down4PercenteEst() {
         System.out.println("---------queryFall4%more-------->  " );
 
-
         Iterable<CoreData>  data  = datarepo.findAll(
                         (QCoreData.coreData.changepercent.lt(-0.04)    )
                         .and (QCoreData.coreData.date.eq (getCacheDate()))) ;
+
+
         data.forEach((a)->{
             TechTechstr str = new TechTechstr(a.getCode() , a.getDate(), 9);
             str.setClose(a.getClose() );
@@ -284,12 +327,17 @@ public class AlgoAdminDaily {
             techStrRepo.save(str);
         } );
 
+
+
+
+
     }
 
     //Large volume than average
     public void   greaterVolAvg(int multiply){
 
         System.out.println("---------greaterVolAvg%more-------->  " );
+
         Iterable<CoreData>  data  = datarepo.findAll(
                 (QCoreData.coreData.volume.gt(QCoreData.coreData.volume.multiply(multiply))    )
                         .and (QCoreData.coreData.date.eq (getCacheDate()))) ;
@@ -329,6 +377,7 @@ public class AlgoAdminDaily {
         );
 
         data.forEach((a)->{
+           // System.out.println("---------queryDslfiftyDayless-------->  " +a.getCode() +" :  " + a.getFifty() );
             TechTechstr str = new TechTechstr(a.getCode() , a.getDate(), 1);
             str.setClose(a.getClose());
             str.setFifty(a.getFifty() );
@@ -337,6 +386,10 @@ public class AlgoAdminDaily {
         } );
         System.out.println("---------queryDslfiftyDayless- DONE------->  " );
     }
+
+
+
+
 
 
     private LocalDate getCacheDate(){
