@@ -17,5 +17,11 @@ public interface IDataAlgo {
 
     List<Object[]>  movingAveragebetween(MovingAverage movingAverage, double start, double end);
 
+    List<Object[]>  enddayvolgreaterfourty();
+
+
+
+
+
 
 }
