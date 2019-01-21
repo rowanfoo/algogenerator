@@ -7,9 +7,11 @@ import com.dharma.algogenerator.dto.RunningStatus;
 import com.dharma.algogenerator.service.Algo.AlgoAdminDaily;
 import com.dharma.algogenerator.service.admin.CalcAverage;
 import com.dharma.algogenerator.service.admin.CalcRSI;
+import com.dharma.algogenerator.util.Notification;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
+@Slf4j
 @Controller
 public class AsxMetaStockImport {
 
@@ -38,7 +40,8 @@ public class AsxMetaStockImport {
     @Autowired
     RunningStatus runningStatus;
 
-
+    @Autowired
+    Notification notification;
 
 
 
@@ -66,7 +69,11 @@ public class AsxMetaStockImport {
     public void algo( ) {
         System.out.println("----------------------------WEB TRIGGER RUN  ALGO" );
         System.out.println("----RUN  ALGO --:");
-        algo.executeAll();
+        try {
+            algo.executeAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("----RUN  ALGO DONE   --:");
 
 
@@ -91,44 +98,64 @@ private  void   insertdata(String code)throws Exception{
 
 
     public void  importAllData() {
-        runningStatus.setImportstatus("");
-       runningStatus.setRsistatus("");
-        runningStatus.setAlgostatus("");
 
-        System.out.println("----ASX import RUN !!!!!  --:");
-        //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
-        runningStatus.setImportstatus("running");
-        allasxcodes.stream()
-                .forEach((a)->{
-                    try {
-                          TimeUnit.SECONDS.sleep(20);
-                        //System.out.println("----ASX import data  --:"+a);
-                        insertdata(a);
-                    } catch (Exception e) {
-                        System.out.println("----ASX import data  --:"+e);
-                    }
+        try {
+            runningStatus.setImportstatus("");
+            runningStatus.setRsistatus("");
+            runningStatus.setAlgostatus("");
 
-                });
-        System.out.println("----ASX import data   ALL DONE --:");
-        System.out.println("----ASX import data   BYE--:");
-        datarepo.flush();
+            System.out.println("----ASX import RUN !!!!!  --:");
+            log.info("-----------------IMPORT START-------------- ");
+            //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
+            runningStatus.setImportstatus("running");
+            allasxcodes.stream()
+                    .forEach((a)->{
+                        try {
+                            TimeUnit.SECONDS.sleep(20);
+                            //System.out.println("----ASX import data  --:"+a);
+                            insertdata(a);
+                        } catch (Exception e) {
+                            System.out.println("----ASX import data  --:"+e);
+                        }
 
-        runningStatus.setImportstatus("completed");
-        System.out.println("----RUN  CALC data  --:");
+                    });
+            System.out.println("----ASX import data   ALL DONE --:");
+            System.out.println("----ASX import data   BYE--:");
+            datarepo.flush();
 
-        runningStatus.setAveragestatus("running");
-        calcAverage.run();
-        runningStatus.setAveragestatus("completed");
+            runningStatus.setImportstatus("completed");
+            System.out.println("----RUN  CALC data  --:");
+
+            runningStatus.setAveragestatus("running");
+            calcAverage.run();
+            runningStatus.setAveragestatus("completed");
 
 
-        System.out.println("----RUN  AVERAGE DONE   --:");
-        runningStatus.setRsistatus("running");
-        calcRSI.run();
-        runningStatus.setRsistatus("completed");
-        System.out.println("----RUN ALGO --:");
-        runningStatus.setAlgostatus("running");
-        algo.executeAll();
-        runningStatus.setAlgostatus("completed");
+            System.out.println("----RUN  AVERAGE DONE   --:");
+            runningStatus.setRsistatus("running");
+            calcRSI.run();
+
+            runningStatus.setRsistatus("completed");
+            System.out.println("----RUN ALGO --:");
+            runningStatus.setAlgostatus("running");
+            log.info("-----------------IMPORT DONE-------------- ");
+            notification.sendMsg("Algo" , " Data import ok");
+            log.info("-----------------RUN ALGO -------------- ");
+            algo.executeAll();
+            log.info("-----------------ALL DONE  THANKS ,,, ZZZZZzzz -------------- ");
+
+            System.out.println("----ASX Algo    ALL DONE --:");
+
+            notification.sendMsg("Algo" , " Algo run ok");
+
+            runningStatus.setAlgostatus("completed");
+
+        }catch (Exception e){
+            System.out.println("---Errr --:" + e);
+            log.info("-----------------OUCH  Errrr !!  -------------- " + e);
+            notification.sendMsg("Algo" , " !! Err "  + e);
+
+        }
 
 
     }
