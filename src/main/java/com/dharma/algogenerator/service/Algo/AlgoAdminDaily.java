@@ -173,6 +173,20 @@ public class AlgoAdminDaily {
 
     }
     public void enddayvolgreaterfourty() {
+        List<Object[]> coreData  = datarepo.enddayvolgreaterfourty();
+
+        for (Object[] result : coreData) {
+            System.out.println ("enddayvolgreaterfourty ---------- code-----> :" + result[0]);
+            System.out.println ("enddayvolgreaterfourty ---------- date- ----> :" + getCacheDate());
+            TechTechstr str = new TechTechstr((String)result[0] , getCacheDate(), 33);
+            str.setFiftycount( Long.parseLong( result[1]+""));
+            str.setVolume( Long.parseLong( result[2]+""));
+            str.setChangepercent(FormatUtil.roundDouble( str.getFiftycount() / str.getVolume()    ) );
+
+            techStrRepo.save(str);
+
+        }
+
 
      //   enddayvolgreaterfourty
     }
@@ -295,7 +309,7 @@ public class AlgoAdminDaily {
     public void  fallWithLowVolumeStrReplace() {
         System.out.println("---------queryFallLowVol-------->  " );
         Iterable<CoreData>  data  = datarepo.findAll(
-                (QCoreData.coreData.volume.lt(QCoreData.coreData.avg3mth.multiply(0.6))
+                (QCoreData.coreData.volume.lt(QCoreData.coreData.avg3mth.divide(2))
                         .and(QCoreData.coreData.changepercent.lt(-0.04)    )
                         .and (QCoreData.coreData.date.eq (getLatestDate())))) ;
         data.forEach((a)->{
@@ -339,13 +353,15 @@ public class AlgoAdminDaily {
         System.out.println("---------greaterVolAvg%more-------->  " );
 
         Iterable<CoreData>  data  = datarepo.findAll(
-                (QCoreData.coreData.volume.gt(QCoreData.coreData.volume.multiply(multiply))    )
+                (QCoreData.coreData.volume.gt(QCoreData.coreData.avg3mth.multiply(multiply))    )
                         .and (QCoreData.coreData.date.eq (getCacheDate()))) ;
         data.forEach((a)->{
             TechTechstr str = new TechTechstr(a.getCode() , a.getDate(), 3);
             str.setClose(a.getClose() );
             str.setVolume(a.getVolume());
             str.setThreemthvol(  a.getAvg3mth() );
+
+
 
             str.setChangepercent(a.getChangepercent() );
             techStrRepo.save(str);
