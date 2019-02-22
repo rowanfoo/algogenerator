@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 @Slf4j
 @Controller
@@ -161,6 +163,18 @@ private  void   insertdata(String code)throws Exception{
     }
 
 
+    @RequestMapping(value = "/enddayvol", method = RequestMethod.GET)
+    public String enddayvol( ) {
+
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            algo.enddayvolgreaterfourty();
+        });
+
+        return "done";
+
+    }
 
 
 
