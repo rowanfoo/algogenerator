@@ -128,7 +128,7 @@ LoadingCache<String, LocalDate> cache = CacheBuilder.newBuilder()
 //    }//done
     @Override
     public  List<Object[]>  enddayvolgreaterfourty(){
-        String mysql =" select * from core_data  where date = ?  and ((closevol / volume  ) > 0.35 ) ";
+        String mysql =" select code , closevol , volume from core_data  where date = ?  and ((closevol / volume  ) > 0.35 ) ";
 
         Query query = entityManager.createNativeQuery(mysql);
         query.setParameter(1, getCurrDate());
