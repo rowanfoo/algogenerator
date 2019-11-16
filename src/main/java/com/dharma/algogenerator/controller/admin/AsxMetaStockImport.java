@@ -10,10 +10,8 @@ import com.dharma.algogenerator.service.admin.CalcRSI;
 import com.dharma.algogenerator.util.Notification;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +22,13 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @Controller
 public class AsxMetaStockImport {
 
     @Autowired
-    ArrayList<String > allasxcodes;
+    ArrayList<String> allasxcodes;
 
     @Autowired
     DataRepo datarepo;
@@ -39,6 +38,8 @@ public class AsxMetaStockImport {
     CalcAverage calcAverage;
     @Autowired
     CalcRSI calcRSI;
+
+
     @Autowired
     RunningStatus runningStatus;
 
@@ -46,9 +47,8 @@ public class AsxMetaStockImport {
     Notification notification;
 
 
-
     @RequestMapping(value = "/run", method = RequestMethod.GET)
-    public void submit( ) {
+    public void submit() {
         System.out.println("----------------------------WEB TRIGGER RUN");
         importAllData();
 
@@ -56,8 +56,8 @@ public class AsxMetaStockImport {
     }
 
     @RequestMapping(value = "/calc", method = RequestMethod.GET)
-    public void calc( ) {
-        System.out.println("----------------------------WEB TRIGGER RUN  CALC" );
+    public void calc() {
+        System.out.println("----------------------------WEB TRIGGER RUN  CALC");
         System.out.println("----RUN  CALC data AVERAGE --:");
         calcAverage.run();
         System.out.println("----RUN  AVERAGE DONE   --:");
@@ -68,8 +68,8 @@ public class AsxMetaStockImport {
     }
 
     @RequestMapping(value = "/algo", method = RequestMethod.GET)
-    public void algo( ) {
-        System.out.println("----------------------------WEB TRIGGER RUN  ALGO" );
+    public void algo() {
+        System.out.println("----------------------------WEB TRIGGER RUN  ALGO");
         System.out.println("----RUN  ALGO --:");
         try {
             algo.executeAll();
@@ -79,27 +79,23 @@ public class AsxMetaStockImport {
         System.out.println("----RUN  ALGO DONE   --:");
 
 
-
     }
 
-private  void   insertdata(String code)throws Exception{
-    final String uri = "https://www.asx.com.au/asx/1/share/"+code;
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private void insertdata(String code) throws Exception {
+        final String uri = "https://www.asx.com.au/asx/1/share/" + code;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    CoreData node = null;
+        CoreData node = null;
         node = mapper.readValue(new URL(uri), CoreData.class);
-    System.out.println("----data done --:"+node);
+        System.out.println("----data done --:" + node);
         datarepo.save(node);
 
 
-
-}
+    }
 
     @Scheduled(cron = "0 15 15 ? * MON-FRI")
-
-
-    public void  importAllData() {
+    public void importAllData() {
 
         try {
             runningStatus.setImportstatus("");
@@ -111,13 +107,13 @@ private  void   insertdata(String code)throws Exception{
             //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
             runningStatus.setImportstatus("running");
             allasxcodes.stream()
-                    .forEach((a)->{
+                    .forEach((a) -> {
                         try {
                             TimeUnit.SECONDS.sleep(20);
                             //System.out.println("----ASX import data  --:"+a);
                             insertdata(a);
                         } catch (Exception e) {
-                            System.out.println("----ASX import data  --:"+e);
+                            System.out.println("----ASX import data  --:" + e);
                         }
 
                     });
@@ -128,34 +124,34 @@ private  void   insertdata(String code)throws Exception{
             runningStatus.setImportstatus("completed");
             System.out.println("----RUN  CALC data  --:");
 
-            runningStatus.setAveragestatus("running");
-            calcAverage.run();
-            runningStatus.setAveragestatus("completed");
-
-
-            System.out.println("----RUN  AVERAGE DONE   --:");
-            runningStatus.setRsistatus("running");
-            calcRSI.run();
-
-            runningStatus.setRsistatus("completed");
-            System.out.println("----RUN ALGO --:");
-            runningStatus.setAlgostatus("running");
-            log.info("-----------------IMPORT DONE-------------- ");
-            notification.sendMsg("Algo" , " Data import ok");
-            log.info("-----------------RUN ALGO -------------- ");
-            algo.executeAll();
+//            runningStatus.setAveragestatus("running");
+//            calcAverage.run();
+//            runningStatus.setAveragestatus("completed");
+//
+//
+//            System.out.println("----RUN  AVERAGE DONE   --:");
+//            runningStatus.setRsistatus("running");
+//            calcRSI.run();
+//
+//            runningStatus.setRsistatus("completed");
+//            System.out.println("----RUN ALGO --:");
+//            runningStatus.setAlgostatus("running");
+//            log.info("-----------------IMPORT DONE-------------- ");
+//            //           notification.sendMsg("Algo" , " Data import ok");
+//            log.info("-----------------RUN ALGO -------------- ");
+//            algo.executeAll();
             log.info("-----------------ALL DONE  THANKS ,,, ZZZZZzzz -------------- ");
 
             System.out.println("----ASX Algo    ALL DONE --:");
 
-            notification.sendMsg("Algo" , " Algo run ok");
+            notification.sendMsg("Algo", " Algo run ok");
 
             runningStatus.setAlgostatus("completed");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("---Errr --:" + e);
             log.info("-----------------OUCH  Errrr !!  -------------- " + e);
-            notification.sendMsg("Algo" , " !! Err "  + e);
+            notification.sendMsg("Algo", " !! Err " + e);
 
         }
 
@@ -164,7 +160,7 @@ private  void   insertdata(String code)throws Exception{
 
 
     @RequestMapping(value = "/enddayvol", method = RequestMethod.GET)
-    public String enddayvol( ) {
+    public String enddayvol() {
 
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -175,7 +171,6 @@ private  void   insertdata(String code)throws Exception{
         return "done";
 
     }
-
 
 
 }

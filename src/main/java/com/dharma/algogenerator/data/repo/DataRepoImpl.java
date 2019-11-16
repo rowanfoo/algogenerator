@@ -142,6 +142,7 @@ LoadingCache<String, LocalDate> cache = CacheBuilder.newBuilder()
 
     @Override
     public List<Object[]>  downGreater40Percent(String code){
+
         // get max price from last 12 month
         //vs today price ,  ?? down >30%
         String mysql =" select (select low from core_data where code=?  and date= ? ) as t," +
@@ -153,6 +154,10 @@ LoadingCache<String, LocalDate> cache = CacheBuilder.newBuilder()
         query.setParameter(1, code);
         query.setParameter(2, getCurrDate());
         query.setParameter(3, code);
+      //  System.out.println("-------DataRepoImpl----downGreater40Percent---"+code);
+
+        //System.out.println("-------DataRepoImpl----downGreater40Percent---"+query.toString());
+
 
         return query.getResultList();
     }

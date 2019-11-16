@@ -64,7 +64,10 @@ public  class FormatUtil {
 
     }
 
-    public static LocalDate getWorkDay(LocalDate date, int workdays) {
+    public static LocalDate
+
+
+    getWorkDay(LocalDate date, int workdays) {
         if (workdays < 1) {
             return date;
         }
@@ -80,7 +83,9 @@ public  class FormatUtil {
             }
             addedDays++;
         }
-        return result;
+//!to do
+        //due to easter -3 days  easter + anzac days
+        return result.minusDays(2) ;
     }
 
 

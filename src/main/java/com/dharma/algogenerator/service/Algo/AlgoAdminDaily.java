@@ -95,6 +95,17 @@ public class AlgoAdminDaily {
 
 
 
+//        consequitveDayFallStr();
+//        downGreater40Percent();
+//        fiftyDayDistance();
+//        fallWithLowVolumeStrReplace();
+//        movingAveragetwoHundred();
+//
+//        queryDsltwoHundredCrossFourHundred(0.01,0.05);
+//        queryDslLowRSI();
+//        down4PercenteEst();
+//        greaterVolAvg(3);
+//        queryDslfiftyDayless(-0.2);
 //        //    breakRoundNumber();
 //        consequitveDayFallStr();
 //        downGreater40Percent();
@@ -170,7 +181,7 @@ public class AlgoAdminDaily {
                 }
             }
         });
-
+        System.out.println ("downGreater40Percent --DONE-------------> ");
     }
     public void enddayvolgreaterfourty() {
         List<Object[]> coreData  = datarepo.enddayvolgreaterfourty();
@@ -250,8 +261,10 @@ public class AlgoAdminDaily {
 
     public void  fiftyDayDistance() {
         List<Object[]> coreData = datarepo.fiftyDayDistance();
+        System.out.println ("fiftyDayDistance START--------------> ");
+
         for (Object[] result : coreData) {
-            System.out.println ("fiftyDayDistance ---------------> "+result[0] + " " + result[1] + " - " + result[2]);
+            System.out.println ("fiftyDayDistance -1--------------> "+result[0] + " " + result[1] + " - " + result[2]);
 
 
             TechTechstr str = new TechTechstr((String)result[0] , ((java.sql.Date)result[1]).toLocalDate(), 2);
@@ -260,10 +273,11 @@ public class AlgoAdminDaily {
             str.setFiftychg(Double.parseDouble( result[4]+""));
 
                  techStrRepo.save(str);
-            System.out.println ("fiftyDayDistance ---------------> "+str);
+            System.out.println ("fiftyDayDistance -2--------------> "+str);
 
         }
 
+        System.out.println ("fiftyDayDistance DONE--------------> ");
     }
 
     // 200 cross 400
