@@ -10,7 +10,7 @@ public class AlgoSchedule {
     @Autowired
     AsxMetaStockImport asxMetaStockImport;
 
-    @Scheduled(cron = "0 15 15 ? * MON-FRI")
+    @Scheduled(cron = "0 15 15 ? * MON-FRI", zone = "GMT-8")
     public void run() {
 
         asxMetaStockImport.importAllData();
