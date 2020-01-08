@@ -2,7 +2,9 @@ package com.dharma.algogenerator.controller.admin;
 
 
 import com.dharma.algogenerator.data.entity.CoreData;
+import com.dharma.algogenerator.data.entity.Fundamental;
 import com.dharma.algogenerator.data.repo.DataRepo;
+import com.dharma.algogenerator.data.repo.FundamentalRepo;
 import com.dharma.algogenerator.dto.RunningStatus;
 import com.dharma.algogenerator.service.Algo.AlgoAdminDaily;
 import com.dharma.algogenerator.service.admin.CalcAverage;
@@ -45,7 +47,8 @@ public class AsxMetaStockImport {
 
     @Autowired
     Notification notification;
-
+    @Autowired
+    FundamentalRepo fundamentalRepo;
 
     @RequestMapping(value = "/run", method = RequestMethod.GET)
     public void submit() {
@@ -82,14 +85,20 @@ public class AsxMetaStockImport {
     }
 
     private void insertdata(String code) throws Exception {
+
         final String uri = "https://www.asx.com.au/asx/1/share/" + code;
+        log.info("-----------------INSERT -------------- " + code);
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+        System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
         CoreData node = null;
         node = mapper.readValue(new URL(uri), CoreData.class);
         System.out.println("----data done --:" + node);
         datarepo.save(node);
+
+
+        Fundamental data = mapper.readValue(new URL(uri), Fundamental.class);
+        fundamentalRepo.save(data);
 
 
     }
