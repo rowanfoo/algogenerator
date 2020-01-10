@@ -1,7 +1,9 @@
 package com.dharma.algogenerator.data.entity;
 
+import com.dharma.algogenerator.util.JacksonStringToDouble;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -28,6 +30,7 @@ public class Fundamental {
     @JsonProperty("number_of_shares")
     private Long shares;
     @JsonProperty("year_change_in_percentage")
+    @JsonDeserialize(using = JacksonStringToDouble.class)
     private Double yearchange;
 
     @JsonSetter("last_trade_date")
