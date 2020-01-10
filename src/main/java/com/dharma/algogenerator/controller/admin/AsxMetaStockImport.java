@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -103,7 +102,7 @@ public class AsxMetaStockImport {
 
     }
 
-    @Scheduled(cron = "0 15 15 ? * MON-FRI")
+    //@Scheduled(cron = "0 15 15 ? * MON-FRI")
     public void importAllData() {
 
         try {
