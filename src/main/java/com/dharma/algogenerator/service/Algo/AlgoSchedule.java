@@ -15,7 +15,8 @@ public class AlgoSchedule {
     @Autowired
     AsxMetaStockImport asxMetaStockImport;
 
-    @Scheduled(cron = "0 7 05 ? * MON-FRI", zone = "GMT-8")
+    //    @Scheduled(cron = "0 07 05 ? * MON-FRI", zone = "GMT-8")
+    @Scheduled(cron = "0 07 05 ? * MON-FRI")
     public void run() {
 
         LocalDateTime start = LocalDateTime.now();
