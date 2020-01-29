@@ -19,6 +19,8 @@ public class JacksonStringToDouble extends JsonDeserializer<Double> {
         String value = "";
         if (percent == -1) value = floatString;
         else value = floatString.substring(0, percent);
+
+        value = value.replace(",", "");
         System.out.println("--------------Deserialize----------DOUBLE ------------" + value);
 
         return Double.valueOf(value);
