@@ -27,8 +27,8 @@ public class Notification {
 //        restTemplate.getForEntity(   builder.build().toUri()   , String.class  );
 
         System.out.println("------------------call ALGO RESET-----------");
-        Unirest.get("http://algo:8080/rest").toString();
-        System.out.println("------------------call ALGO RESET--DONE---------");
+        String s = Unirest.get("http://algo:8080/reset").toString();
+        System.out.println("------------------call ALGO RESET--DONE---------" + s);
 
 
     }
