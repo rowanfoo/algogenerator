@@ -1,28 +1,26 @@
 package com.dharma.algogenerator;
 
-import com.dharma.algogenerator.data.entity.*;
+import com.dharma.algogenerator.data.entity.AllStock;
+import com.dharma.algogenerator.data.entity.CoreData;
+import com.dharma.algogenerator.data.entity.CoreStock;
+import com.dharma.algogenerator.data.entity.QAllStock;
 import com.dharma.algogenerator.data.repo.AllStockRepo;
 import com.dharma.algogenerator.data.repo.DataRepo;
+import com.dharma.algogenerator.data.repo.NewsRepo;
 import com.dharma.algogenerator.data.repo.StockRepo;
 import com.dharma.algogenerator.service.Algo.AlgoAdminDaily;
 import com.dharma.algogenerator.service.admin.CalcAverage;
 import com.dharma.algogenerator.service.admin.CalcChangePercent;
 import com.dharma.algogenerator.service.admin.CalcRSI;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,6 +46,9 @@ public class IMPORTCategory {
     @Autowired
     CalcChangePercent calcChangePercent;
 
+    @Autowired
+    NewsRepo newsRepo;
+
     //EZY_CHART
     //ADD FILE PATH
 //    String FILEPATH = "E:\\TEMP\\HistoricalData-011018.txt";
@@ -70,7 +71,7 @@ public class IMPORTCategory {
     StockRepo stockRepo;
 
     @Test
-    @Transactional
+    // @Transactional
     public void getFromcsv() {
         System.out.println("---------etFromcsv-------------");
         Scanner scanner = null;
@@ -79,7 +80,7 @@ public class IMPORTCategory {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        int count = 0;
         while (scanner.hasNextLine()) {
             String[] data = scanner.nextLine().split(",");
             if (!allasxcodes.contains(data[0].trim())) {
@@ -92,11 +93,16 @@ public class IMPORTCategory {
                 String cat = String.join(",", arrayList);
 
                 System.out.println(data[0] + "----------" + cat);
+                System.out.println("---EMPTY-------" + data[0].isEmpty());
+
+                if (!data[0].isEmpty()) {
+                    count++;
+                    runAllAlgo(data[0], cat);
+                }
 
             }
-
-
         }
+        System.out.println("-----------------------OVER------------------" + count);
     }
 
 
@@ -105,9 +111,17 @@ public class IMPORTCategory {
         int count = 0;
 
         String path = FILEPATH + name + ".txt";
+        System.out.println("----RUN ALL ALGO-----PATH--" + path);
+
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(4);
+
         try {
             Scanner scanner = new Scanner(new File(path));
-            if (scanner.hasNextLine()) makecode(name, cat);
+            if (scanner.hasNextLine()) {
+                makecode(name, cat);
+                //   makenews(name);
+            }
 
             while (scanner.hasNextLine()) {
                 String[] country = scanner.nextLine().split(" ");
@@ -117,8 +131,13 @@ public class IMPORTCategory {
 
                 LocalDate date = LocalDate.parse(country[1], DateTimeFormatter.ofPattern("yyMMdd"));
 
-                CoreData data = new CoreData(country[0] + ".AX", date, new Double(country[5]) / 100, new Double("0"), new Double("0"), new Double(country[2]) / 100, new Double(country[3]) / 100,
-                        new Double(country[4]) / 100, new Long(country[6]));
+                Double close = Double.parseDouble(nf.format(new Double(country[5]) / 100));
+                Double open = Double.parseDouble(nf.format(new Double(country[2]) / 100));
+                Double high = Double.parseDouble(nf.format(new Double(country[3]) / 100));
+                Double low = Double.parseDouble(nf.format(new Double(country[4]) / 100));
+
+                CoreData data = new CoreData(country[0] + ".AX", date, close, new Double("0"), new Double("0"), open, high,
+                        low, new Long(country[6]));
 
                 System.out.println("-------------------------DATA-------: " + data);
                 datarepo.save(data);
@@ -154,46 +173,44 @@ public class IMPORTCategory {
 
     }
 
-    @Test
-    public void makenews() {
-        String code = "NHC";
-        String url = " https://www.asx.com.au/asx/1/company/" + code + "/announcements?count=20";
-        try {
-            HttpResponse<JsonNode> j = Unirest.get(url).asJson();
-
-            //System.out.println("----ans----" + j.getBody().toString());
-
-            //    JSONObject json = j.getBody().getObject().getJSONObject("data");
-
-
-            //System.out.println("----ans----" + j.getBody().getObject().getJSONArray("data").getClass().getName());
-            JSONArray arr = j.getBody().getObject().getJSONArray("data");
-
-
-            arr.forEach(a -> {
-                System.out.println("----ans----" + ((JSONObject) a).getString("header"));
-                String date = ((JSONObject) a).getString("document_release_date");
-                date = date.substring(0, date.indexOf("T"));
-                LocalDate dt = LocalDate.parse(date);
-                System.out.println("----ans----" + dt);
-                News news = News.builder()
-                        .code(code).date(dt).title(((JSONObject) a).getString("header")).title(((JSONObject) a).getString("url")).build();
-
-
-            });
-
-            // JSONObject json = arr.getJSONObject(0);
-
-            //  String token = json.getString("token");
-            //   System.out.println("----ans----" + json.getString("header"));
-
-
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-
-
-    }
+//    public void makenews(String code) {
+//        String url = " https://www.asx.com.au/asx/1/company/" + code + "/announcements?count=100";
+//        try {
+//            HttpResponse<JsonNode> j = Unirest.get(url).asJson();
+//
+//            //System.out.println("----ans----" + j.getBody().toString());
+//
+//            //    JSONObject json = j.getBody().getObject().getJSONObject("data");
+//
+//
+//            //System.out.println("----ans----" + j.getBody().getObject().getJSONArray("data").getClass().getName());
+//            JSONArray arr = j.getBody().getObject().getJSONArray("data");
+//
+//
+//            arr.forEach(a -> {
+//                System.out.println("----ans----" + ((JSONObject) a).getString("header"));
+//                String date = ((JSONObject) a).getString("document_release_date");
+//                date = date.substring(0, date.indexOf("T"));
+//                LocalDate dt = LocalDate.parse(date);
+//                System.out.println("----ans----" + dt + "----------" + (((JSONObject) a).getString("header")));
+//                News news = News.builder()
+//                        .code(code).date(dt).title(((JSONObject) a).getString("header")).title(((JSONObject) a).getString("url")).build();
+//                newsRepo.save(news);
+//
+//            });
+//
+//            // JSONObject json = arr.getJSONObject(0);
+//
+//            //  String token = json.getString("token");
+//            //   System.out.println("----ans----" + json.getString("header"));
+//
+//
+//        } catch (UnirestException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 
 
 }
