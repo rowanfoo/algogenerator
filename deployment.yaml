@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algogenerator-deployment
+  namespace: stocks
+  labels:
+    app: algogenerator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: algogenerator
+  template:
+    metadata:
+      labels:
+        app: algogenerator
+    spec:
+      containers:
+        - name: algogenerator
+          image: rowanf/algogenerator:1
+          ports:
+            - containerPort: 8004
+          imagePullPolicy: Always
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: algogenerator-nodeport
+  namespace: stocks
+spec:
+  selector:
+    app: algogenerator
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 10700
+      protocol: TCP
+
+
