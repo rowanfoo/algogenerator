@@ -1,6 +1,7 @@
 package com.dharma.algogenerator.util;
 
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +27,16 @@ public class Notification {
 //        System.out.println("======sendMSG====="  + builder.build().toUri() );
 //        restTemplate.getForEntity(   builder.build().toUri()   , String.class  );
 
+//        String s = Unirest.get("http://algo:8080/reset").toString();
+
         System.out.println("------------------call ALGO RESET-----------");
-        String s = Unirest.get("http://algo:8080/reset").toString();
+        String s = null;
+        try {
+            s = Unirest.get("http://algo:8080/reset").asString().getBody();
+
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
         System.out.println("------------------call ALGO RESET--DONE---------" + s);
 
 

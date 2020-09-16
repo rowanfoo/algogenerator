@@ -42,7 +42,14 @@ public class IMPORTFILE {
 //    String FILEPATH = "E:\\TEMP\\NHC.txt";
 //    String FILEPATH = "E:\\TEMP\\HistoricalData-2019-08-22.txt";
 //    String FILEPATH = "E:\\TEMP\\AKP.txt";
-    String FILEPATH = "E:\\TEMP\\ID8.txt";
+//    String FILEPATH = "E:\\TEMP\\BIN.txt";
+//    String FILEPATH = "E:\\TEMP\\BUD.txt";
+    // String FILEPATH = "E:\\TEMP\\SMI-1.txt";
+//    String FILEPATH = "E:\\TEMP\\HistoricalData-2020-04-23.txt";
+//    String FILEPATH = "E:\\TEMP\\HistoricalData-2020-07-09.txt";
+    String FILEPATH = "E:\\TEMP\\HistoricalData-2020-08-21.txt";  /// EZY chart
+
+
     @Autowired
     ArrayList<String> allasxcodes;
 
@@ -59,8 +66,8 @@ public class IMPORTFILE {
                 // use comma as separator
                 String[] country = scanner.nextLine().split(" ");
                 //  System.out.println("-------------------------***********-------: " + country.length);
-                //System.out.println("-------------------------DATA----country---: "+ country[0] +  allcodes.contains( country[0].toUpperCase()));
-                //   System.out.println("-------------------------DATA----country---: "+allasxcodes);
+                //    System.out.println("-------------------------DATA----country---: " + country[0] + "::" + allasxcodes.contains((country[0].toUpperCase()) + ".AX"));
+                //  System.out.println("-------------------------DATA----country---: " + allasxcodes);
                 if (allasxcodes.contains(country[0].toUpperCase())) {
                     System.out.println("-------------------------DATA----country---: " + country[0].toUpperCase());
 
@@ -70,7 +77,8 @@ public class IMPORTFILE {
                             new Double(country[4]) / 100, new Long(country[6]));
 
                     System.out.println("-------------------------DATA-------: " + data);
-                    //               datarepo.save(data);
+                    datarepo.save(data);
+                    datarepo.flush();
                     count++;
                 }
 
@@ -78,9 +86,9 @@ public class IMPORTFILE {
             }
 
             scanner.close();
-            //   System.out.println("-------------------------CLOSING-------SAVE: " + count);
-            // datarepo.flush();
-            //  calcChangePercent.run();
+            System.out.println("-------------------------CLOSING-------SAVE: " + count);
+            datarepo.flush();
+            calcChangePercent.run();
             System.out.println("-------------------------CHG PERCENT RUN DONE-------: ");
 
             //  calcAverage.run();

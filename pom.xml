@@ -139,7 +139,7 @@
                         <image>openjdk:8</image>
                     </from>
 
-
+                    <allowInsecureRegistries>true</allowInsecureRegistries>
                     <to>
                         <image>rowanf/algogenerator:1</image>
                         <auth>

@@ -18,15 +18,16 @@ public class AlgoSchedule {
     @Scheduled(cron = "0 07 05 ? * MON-FRI")
     public void run() {
 
-        LocalDateTime start = LocalDateTime.now();
-        asxMetaStockImport.importAllData();
-
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("hhhhMMddHHmm");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
         System.out.println("------------------------ IMPORT ENDS--1------------" + LocalDateTime.now());
 
         System.out.println("------------------------ IMPORT ENDS- 2-------------" + dateFormat.format(LocalDateTime.now()));
+
+
+        LocalDateTime start = LocalDateTime.now();
+        asxMetaStockImport.importAllData();
+
 
         // System.out.println("------------------------ IMPORT STARTS--------------" + dateFormat.format(start));
         //Unirest.get("http://algo:8080/reset");

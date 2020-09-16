@@ -14,9 +14,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Controller
+@RestController
 public class AsxMetaStockImport {
 
     @Autowired
@@ -56,6 +56,26 @@ public class AsxMetaStockImport {
 
 
     }
+
+
+//    @RequestMapping(value = "/jib", method = RequestMethod.GET)
+//    public void hello() {
+//        System.out.println("----------------------------WEB TRIGGER RUN  hello");
+////        String s = Unirest.get("http://user:8090/hello").toString();
+//        String s = null;
+//        try {
+////            s = Unirest.get("http://rowanfoo.ddns.net:10700/hello").asString().getBody();
+//
+//        } catch (UnirestException e) {
+//            e.printStackTrace();
+//        }
+////
+////
+//        System.out.println("----------------------------WEB TRIGGER RUN  hello :" + s);
+//
+//
+//    }
+
 
     @RequestMapping(value = "/calc", method = RequestMethod.GET)
     public void calc() {
