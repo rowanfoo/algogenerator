@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.TimeZone;
 
 @Component
@@ -15,14 +16,15 @@ public class AlgoSchedule {
     AsxMetaStockImport asxMetaStockImport;
 
     //    @Scheduled(cron = "0 07 05 ? * MON-FRI", zone = "GMT-8")
-    @Scheduled(cron = "0 07 05 ? * MON-FRI")
+//    @Scheduled(cron = "0 07 05 ? * MON-FRI")
+    @Scheduled(cron = "0 30 14 ? * MON-FRI")
     public void run() {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hhhhMMddHHmm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMdd-HH:mm");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
         System.out.println("------------------------ IMPORT ENDS--1------------" + LocalDateTime.now());
 
-        System.out.println("------------------------ IMPORT ENDS- 2-------------" + dateFormat.format(LocalDateTime.now()));
+        System.out.println("------------------------ IMPORT ENDS- 2-------------" + dateFormat.format(new Date()));
 
 
         LocalDateTime start = LocalDateTime.now();
