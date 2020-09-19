@@ -14,6 +14,7 @@ pipeline {
         stage('Compile Stage') {
             steps {
                 withKubeConfig([credentialsId: 'kubeconff' ]) {
+                      sh 'kubectl config view'
                       sh 'kubectl create -f  deployment.yaml'
                  }
 
