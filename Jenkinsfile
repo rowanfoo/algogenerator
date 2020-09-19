@@ -13,39 +13,17 @@ pipeline {
     stages {
         stage('Compile Stage') {
             steps {
-                sh 'echo hello'
-                sh 'pwd'
-                sh 'mvn -version'
-                sh 'mvn compile'
-            }
+
+
+                 withKubeConfig([credentialsId: 'kubeconff' ]) {
+                      sh 'kubectl create -f  deployment.yaml'
+                 }
+
+
+
         }
 
-        stage('Build Stage') {
-            steps {
-                sh 'echo Build time'
-                sh 'pwd'
-                sh 'mvn package -DskipTests'
-            }
-        }
 
-        stage('DOCKER TIME'){
-            steps{
-                script {
-                   dockerImage =  docker.build "rowanf/algogenerator:$BUILD_NUMBER"
-                    sh 'pwd'
-                }
-            }
-        }
-
-        stage('DEPLOY '){
-            steps{
-                script {
-                    docker.withRegistry( '', "mydocker-cred" ) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
     }
 
 

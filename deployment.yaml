@@ -1,41 +1,30 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: algogenerator-deployment
   namespace: stocks
   labels:
-    app: algogenerator
+    app: algogeneratorxx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: algogenerator
+      app: algogeneratorxx
   template:
     metadata:
       labels:
-        app: algogenerator
+        app: algogeneratorxx
     spec:
       containers:
-        - name: algogenerator
+        - name: algogeneratorxx
           image: rowanf/algogenerator:1
           ports:
             - containerPort: 8004
           imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: spring-dbconfig
 ---
-# service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: algogenerator-nodeport
-  namespace: stocks
-spec:
-  selector:
-    app: algogenerator
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      nodePort: 10700
-      protocol: TCP
 
 
