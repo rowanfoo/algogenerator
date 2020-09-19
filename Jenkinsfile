@@ -13,9 +13,7 @@ pipeline {
     stages {
         stage('Compile Stage') {
             steps {
-
-
-                 withKubeConfig([credentialsId: 'kubeconff' ]) {
+                withKubeConfig([credentialsId: 'kubeconff' ]) {
                       sh 'kubectl create -f  deployment.yaml'
                  }
 
@@ -27,4 +25,5 @@ pipeline {
     }
 
 
+}
 }
