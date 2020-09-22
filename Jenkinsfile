@@ -1,3 +1,4 @@
+/*
 pipeline {
 
  environment {
@@ -47,6 +48,35 @@ pipeline {
             }
         }
     }
+
+
+}
+
+
+*/
+
+
+pipeline {
+
+ environment {
+     dockerImage = ""
+  }
+    agent any
+
+    tools {
+        maven 'maven'
+    }
+
+
+    stages {
+        stage('Compile Stage') {
+            steps {
+                sh 'echo hello'
+                sh 'pwd'
+                sh 'w'
+            }
+        }
+
 
 
 }
