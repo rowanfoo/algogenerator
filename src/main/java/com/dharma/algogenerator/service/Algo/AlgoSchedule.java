@@ -23,7 +23,6 @@ public class AlgoSchedule {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMdd-HH:mm");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
         System.out.println("------------------------ IMPORT ENDS--1------------" + LocalDateTime.now());
-
         System.out.println("------------------------ IMPORT ENDS- 2-------------" + dateFormat.format(new Date()));
 
 
