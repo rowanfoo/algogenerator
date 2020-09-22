@@ -74,7 +74,7 @@ public class AlgogeneratorApplication implements CommandLineRunner {
     public static void main(String[] args) {
         System.out.println("----------------------AlgogeneratorApplication start------------" + LocalDateTime.now());
 
-        if (args != null) {
+        if (args != null & args.length > 0) {
             torunlocal = args[0];
         }
         SpringApplication.run(AlgogeneratorApplication.class, args);
