@@ -1,6 +1,7 @@
 package com.dharma.algogenerator.service.Algo;
 
 import com.dharma.algogenerator.controller.admin.AsxMetaStockImport;
+import com.mashape.unirest.http.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,9 +31,9 @@ public class AlgoSchedule {
         asxMetaStockImport.importAllData();
 
 
-        // System.out.println("------------------------ IMPORT STARTS--------------" + dateFormat.format(start));
-        //Unirest.get("http://algo:8080/reset");
-        System.out.println("------------------------ Uni call-------------");
+        System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
+        Unirest.get("http://ta4j:8080/reset");
+        System.out.println("------------------------ALGO DONE---------------");
 
 
     }
