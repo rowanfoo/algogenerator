@@ -1,4 +1,3 @@
-/*
 pipeline {
 
  environment {
@@ -53,9 +52,9 @@ pipeline {
 }
 
 
-*/
 
 
+/*
 pipeline {
 
  environment {
@@ -81,3 +80,4 @@ pipeline {
 
 }
 }
+*/
