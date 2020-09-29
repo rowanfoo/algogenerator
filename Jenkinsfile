@@ -1,8 +1,12 @@
 pipeline {
 
- environment {
-     dockerImage = ""
-  }
+  environment {
+       dockerImage = ""
+       image_name=""
+       name="algogenerator"
+       portno="8004"
+       targetport="10700"
+    }
     agent any
 
     tools {
@@ -31,7 +35,8 @@ pipeline {
         stage('DOCKER TIME'){
             steps{
                 script {
-                   dockerImage =  docker.build "rowanf/algogenerator:$BUILD_NUMBER"
+                 image_name="rowanf/algogenerator:$BUILD_NUMBER"
+                   dockerImage =  docker.build image_name
                     sh 'pwd'
                 }
             }
@@ -46,6 +51,17 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Build') {
+                    steps {
+                        sh 'ssh -p 1600 root@192.168.0.10 date'
+                         sh "ssh -p 1600 root@192.168.0.10 ansible-playbook -vvv /home/rowan/myplaybook.yaml -e \"name=${name}\"  -e \"image_name=${image_name}\" -e \"portno=${portno}\" -e \"targetport=${targetport}\"  "
+                    }
+               }
+
+
+   ////
     }
 
 
