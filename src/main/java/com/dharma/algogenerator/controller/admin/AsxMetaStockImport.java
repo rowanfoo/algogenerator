@@ -12,6 +12,7 @@ import com.dharma.algogenerator.service.admin.CalcRSI;
 import com.dharma.algogenerator.util.Notification;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -135,16 +136,16 @@ public class AsxMetaStockImport {
             //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
             runningStatus.setImportstatus("running");
             allasxcodes.stream()
-                    .forEach((a) -> {
-                        try {
-                            TimeUnit.SECONDS.sleep(20);
-                            //System.out.println("----ASX import data  --:"+a);
-                            insertdata(a);
-                        } catch (Exception e) {
-                            System.out.println("----ASX import data  --:" + e);
-                        }
+                       .forEach((a) -> {
+                           try {
+                               TimeUnit.SECONDS.sleep(20);
+                               //System.out.println("----ASX import data  --:"+a);
+                               insertdata(a);
+                           } catch (Exception e) {
+                               System.out.println("----ASX import data  --:" + e);
+                           }
 
-                    });
+                       });
             System.out.println("----ASX import data   ALL DONE --:");
             System.out.println("----ASX import data   BYE--:");
             datarepo.flush();
@@ -175,6 +176,12 @@ public class AsxMetaStockImport {
             notification.sendMsg("Algo", " Algo run ok");
 
             runningStatus.setAlgostatus("completed");
+            System.out.println("----REST --:");
+
+            Unirest.get("http://ta4j:8080/scheduler/rowan");
+
+            System.out.println("----REST DONE--:");
+
 
         } catch (Exception e) {
             System.out.println("---Errr --:" + e);
