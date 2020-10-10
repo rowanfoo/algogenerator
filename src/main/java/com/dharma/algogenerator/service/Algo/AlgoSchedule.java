@@ -32,7 +32,7 @@ public class AlgoSchedule {
 
 
         System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
-        Unirest.get("http://ta4j:8080/reset");
+        Unirest.get("http://ta4j:8080/scheduler/rowan");
         System.out.println("------------------------ALGO DONE---------------");
 
 
