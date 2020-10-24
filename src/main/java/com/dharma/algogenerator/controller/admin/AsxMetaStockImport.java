@@ -12,8 +12,9 @@ import com.dharma.algogenerator.service.admin.CalcRSI;
 import com.dharma.algogenerator.util.Notification;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.GetRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -211,10 +212,15 @@ public class AsxMetaStockImport {
     @RequestMapping(value = "/scheduler", method = RequestMethod.GET)
     public void scheduler() {
         System.out.println("------------------------ Scheduler run now-------------");
-        GetRequest abc = Unirest.get("http://ta4j:8080/scheduler/rowan");
+//        GetRequest abc = Unirest.get("http://ta4j:8080/scheduler/rowan");
+//        Unirest.get("http://ta4j:8080/scheduler/rowan").asJson();
 
         try {
-            System.out.println("------------------------Scheduler ---------------" + abc.toString());
+
+            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j:8080/scheduler/rowan").asJson();
+            System.out.println("------------------------Scheduler -1--------------" + jsonNodeHttpResponse.getStatus());
+            System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getStatusText());
+            System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getHeaders());
 
         } catch (Exception e) {
             System.out.println("------------------------Scheduler -- ERR-------------" + e);
