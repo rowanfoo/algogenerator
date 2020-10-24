@@ -1,6 +1,8 @@
 package com.dharma.algogenerator.service.Algo;
 
 import com.dharma.algogenerator.controller.admin.AsxMetaStockImport;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,9 +33,26 @@ public class AlgoSchedule {
         asxMetaStockImport.importAllData();
 
 
-        System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
-        Unirest.get("http://ta4j:8080/scheduler/rowan");
-        System.out.println("------------------------ALGO DONE---------------");
+//        System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
+//        Unirest.get("http://ta4j:8080/scheduler/rowan");
+//        System.out.println("------------------------ALGO DONE---------------");
+
+        //   http://192.168.0.10:10100//scheduler/rowan
+
+
+        try {
+            System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
+
+            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
+
+            System.out.println("------------------------Scheduler -1-----STATUS---------" + jsonNodeHttpResponse.getStatus());
+            System.out.println("------------------------Scheduler ----2---STATUS--text------" + jsonNodeHttpResponse.getStatusText());
+            System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getHeaders());
+
+        } catch (Exception e) {
+            System.out.println("------------------------Scheduler -- ERR-------------" + e);
+
+        }
 
 
     }
