@@ -217,7 +217,10 @@ public class AsxMetaStockImport {
 
         try {
 
-            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j:8080/scheduler/rowan").asJson();
+
+//            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j:8080/scheduler/rowan").asJson();
+            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
+
             System.out.println("------------------------Scheduler -1--------------" + jsonNodeHttpResponse.getStatus());
             System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getStatusText());
             System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getHeaders());
