@@ -207,5 +207,12 @@ public class AsxMetaStockImport {
 
     }
 
+    @RequestMapping(value = "/scheduler", method = RequestMethod.GET)
+    public void scheduler() {
+        System.out.println("------------------------ Scheduler run now-------------");
+        Unirest.get("http://ta4j:8080/scheduler/rowan");
+        System.out.println("------------------------Scheduler DONE---------------");
+
+    }
 
 }
