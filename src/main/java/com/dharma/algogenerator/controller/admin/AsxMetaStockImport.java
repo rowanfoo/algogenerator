@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -106,7 +107,7 @@ public class AsxMetaStockImport {
 
     }
 
-    private void insertdata(String code) throws Exception {
+    private void insertdata(String code, String date) throws Exception {
 
         final String uri = "https://www.asx.com.au/asx/1/share/" + code;
         log.info("-----------------INSERT -------------- " + code);
@@ -132,7 +133,8 @@ public class AsxMetaStockImport {
             runningStatus.setImportstatus("");
             runningStatus.setRsistatus("");
             runningStatus.setAlgostatus("");
-
+            String date = LocalDate.now().toString();
+//FORCE TO DO THIS check , CORE_DATA  last_trade_date issue
             System.out.println("----ASX import RUN !!!!!  --:");
             log.info("-----------------IMPORT START-------------- ");
             //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
@@ -142,7 +144,7 @@ public class AsxMetaStockImport {
                            try {
                                TimeUnit.SECONDS.sleep(20);
                                //System.out.println("----ASX import data  --:"+a);
-                               insertdata(a);
+                               insertdata(a, date);
                            } catch (Exception e) {
                                System.out.println("----ASX import data  --:" + e);
                            }
