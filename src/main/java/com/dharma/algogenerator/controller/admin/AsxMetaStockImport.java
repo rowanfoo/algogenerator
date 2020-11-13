@@ -107,7 +107,7 @@ public class AsxMetaStockImport {
 
     }
 
-    private void insertdata(String code, String date) throws Exception {
+    private void insertdata(String code, LocalDate date) throws Exception {
 
         final String uri = "https://www.asx.com.au/asx/1/share/" + code;
         log.info("-----------------INSERT -------------- " + code);
@@ -116,6 +116,7 @@ public class AsxMetaStockImport {
         System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
         CoreData node = null;
         node = mapper.readValue(new URL(uri), CoreData.class);
+        node.setDate(date);
         System.out.println("----data done --:" + node);
         datarepo.save(node);
 
@@ -133,7 +134,7 @@ public class AsxMetaStockImport {
             runningStatus.setImportstatus("");
             runningStatus.setRsistatus("");
             runningStatus.setAlgostatus("");
-            String date = LocalDate.now().toString();
+            LocalDate date = LocalDate.now();
 //FORCE TO DO THIS check , CORE_DATA  last_trade_date issue
             System.out.println("----ASX import RUN !!!!!  --:");
             log.info("-----------------IMPORT START-------------- ");
