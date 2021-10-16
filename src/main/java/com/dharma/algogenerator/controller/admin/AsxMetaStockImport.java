@@ -53,6 +53,7 @@ public class AsxMetaStockImport {
     @Autowired
     FundamentalRepo fundamentalRepo;
 
+    //http://192.168.0.10:10700/run
     @RequestMapping(value = "/run", method = RequestMethod.GET)
     public void submit() {
         System.out.println("----------------------------WEB TRIGGER RUN");
@@ -183,7 +184,8 @@ public class AsxMetaStockImport {
             runningStatus.setAlgostatus("completed");
             System.out.println("----REST --:");
 
-            Unirest.get("http://ta4j:8080/scheduler/rowan");
+            Unirest.get("http://192.168.0.10:10100/scheduler/rowan");
+
 
             System.out.println("----REST DONE--:");
 
