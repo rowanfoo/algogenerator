@@ -2,7 +2,6 @@ package com.dharma.algogenerator.controller.admin;
 
 
 import com.dharma.algogenerator.data.entity.CoreData;
-import com.dharma.algogenerator.data.entity.Fundamental;
 import com.dharma.algogenerator.data.repo.DataRepo;
 import com.dharma.algogenerator.data.repo.FundamentalRepo;
 import com.dharma.algogenerator.dto.RunningStatus;
@@ -23,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -107,11 +106,35 @@ public class AsxMetaStockImport {
 
 
     }
+// ASX
+//    private void insertdata(String code, LocalDate date) throws Exception {
+//
+//        final String uri = "https://www.asx.com.au/asx/1/share/" + code;
+//        log.info("-----------------INSERT -------------- " + code);
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
+//        CoreData node = null;
+//        node = mapper.readValue(new URL(uri), CoreData.class);
+//        node.setDate(date);
+//        System.out.println("----data done --:" + node);
+//        datarepo.save(node);
+//
+//
+//        Fundamental data = mapper.readValue(new URL(uri), Fundamental.class);
+//        fundamentalRepo.save(data);
+//
+//
+//    }
 
     private void insertdata(String code, LocalDate date) throws Exception {
 
-        final String uri = "https://www.asx.com.au/asx/1/share/" + code;
+
+        final String uri = "https://eodhistoricaldata.com/api/real-time/" + code + ".au" + "?api_token=61d5ab86451db3.27602867&fmt=json";
+
         log.info("-----------------INSERT -------------- " + code);
+
+        log.info("-----------------URI -------------- " + uri);
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
@@ -121,12 +144,13 @@ public class AsxMetaStockImport {
         System.out.println("----data done --:" + node);
         datarepo.save(node);
 
-
-        Fundamental data = mapper.readValue(new URL(uri), Fundamental.class);
-        fundamentalRepo.save(data);
+//
+//        Fundamental data = mapper.readValue(new URL(uri), Fundamental.class);
+//        fundamentalRepo.save(data);
 
 
     }
+
 
     //@Scheduled(cron = "0 15 15 ? * MON-FRI")
     public void importAllData() {
@@ -136,15 +160,17 @@ public class AsxMetaStockImport {
             runningStatus.setRsistatus("");
             runningStatus.setAlgostatus("");
             LocalDate date = LocalDate.now();
+            LocalDateTime start = LocalDateTime.now();
 //FORCE TO DO THIS check , CORE_DATA  last_trade_date issue
             System.out.println("----ASX import RUN !!!!!  --:");
             log.info("-----------------IMPORT START-------------- ");
             //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
             runningStatus.setImportstatus("running");
             allasxcodes.stream()
+
                        .forEach((a) -> {
                            try {
-                               TimeUnit.SECONDS.sleep(20);
+                               //     TimeUnit.SECONDS.sleep(20);
                                //System.out.println("----ASX import data  --:"+a);
                                insertdata(a, date);
                            } catch (Exception e) {
@@ -156,6 +182,8 @@ public class AsxMetaStockImport {
             System.out.println("----ASX import data   BYE--:");
             datarepo.flush();
 
+            LocalDateTime end = LocalDateTime.now();
+            log.info("-----------------IMPORT END -------------- " + start + " --- END ----" + end);
             runningStatus.setImportstatus("completed");
             System.out.println("----RUN  CALC data  --:");
 

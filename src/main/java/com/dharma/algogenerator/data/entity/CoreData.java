@@ -23,20 +23,24 @@ public class CoreData {
     private Long id;
     private String code;
     private LocalDate date;
-    @JsonProperty("open_price")
+    // ASX @JsonProperty("open_price")
     private Double open;
-    @JsonProperty("day_high_price")
+    // ASX @JsonProperty("day_high_price")
     private Double high;
-    @JsonProperty("day_low_price")
+    // ASX @JsonProperty("day_low_price")
     private Double low;
-    @JsonProperty("last_price")
+    //ASX  @JsonProperty("last_price")
     private Double close;
     private String closevol;
     private Long volume;
-    @JsonProperty("change_price")
+    //ASX    @JsonProperty("change_price")
+    @JsonProperty("change")
     private Double changes;
+    @JsonProperty("change_p")
     private Double changepercent;
-    @JsonProperty("previous_close_price")
+
+    //ASX    @JsonProperty("previous_close_price")
+    @JsonProperty("previousClose")
     private String previousclose;
     private Long avg3mth;
     private Double fifty;

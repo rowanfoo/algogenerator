@@ -20,18 +20,19 @@ public class AlgoSchedule {
 
     //    @Scheduled(cron = "0 07 05 ? * MON-FRI", zone = "GMT-8")
 //    @Scheduled(cron = "0 07 05 ? * MON-FRI")
-    @Scheduled(cron = "0 30 14 ? * MON-FRI")
+    @Scheduled(cron = "0 15 7 ? * MON-FRI")
     public void run() {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMdd-HH:mm");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
-        System.out.println("------------------------ IMPORT ENDS--1------------" + LocalDateTime.now());
-        System.out.println("------------------------ IMPORT ENDS- 2-------------" + dateFormat.format(new Date()));
+        System.out.println("------------------------ IMPORT START--1------------" + LocalDateTime.now());
+        System.out.println("------------------------ IMPORT START- 2-------------" + dateFormat.format(new Date()));
 
 
         LocalDateTime start = LocalDateTime.now();
         asxMetaStockImport.importAllData();
-
+        System.out.println("------------------------ IMPORT END--1------------" + LocalDateTime.now());
+        System.out.println("------------------------ IMPORT END- 2-------------" + dateFormat.format(new Date()));
 
 //        System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
 //        Unirest.get("http://ta4j:8080/scheduler/rowan");
@@ -43,8 +44,10 @@ public class AlgoSchedule {
         try {
             System.out.println("------------------------ ALGO STARTS--------------" + dateFormat.format(new Date()));
 
-            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
+//            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
 
+
+            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://localhost:10100/scheduler/rowan").asJson();
             System.out.println("------------------------Scheduler -1-----STATUS---------" + jsonNodeHttpResponse.getStatus());
             System.out.println("------------------------Scheduler ----2---STATUS--text------" + jsonNodeHttpResponse.getStatusText());
             System.out.println("------------------------Scheduler ----2-----------" + jsonNodeHttpResponse.getHeaders());
