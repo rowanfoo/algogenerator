@@ -36,6 +36,8 @@ public class AlgogeneratorApplication implements CommandLineRunner {
     @Autowired
     AsxMetaStockImport asxMetaStockImport;
     static String torunlocal = "";
+    @Value("${spring.datasource.url}")
+    String myURL;
 
     @Bean
     public ArrayList<String> allasxcodes() {
@@ -43,6 +45,7 @@ public class AlgogeneratorApplication implements CommandLineRunner {
         System.out.println("--------allasxcodes--------- ");
         List<CoreStock> core = stock.findAll();
         System.out.println("--------allasxcodes 2--------- ");
+        System.out.println("--------allasxcodes total--------- " + core.size());
         core.forEach((a) -> {
             allcodes.add(a.getCode().substring(0, a.getCode().indexOf(".")));
         });
@@ -72,7 +75,7 @@ public class AlgogeneratorApplication implements CommandLineRunner {
 
 
     public static void main(String[] args) {
-        System.out.println("----------------------AlgogeneratorApplication start------------" + LocalDateTime.now());
+        System.out.println("----------------------AlgogeneratorApplication start----v4--------" + LocalDateTime.now());
 
         if (args != null & args.length > 0) {
             torunlocal = args[0];
@@ -83,6 +86,7 @@ public class AlgogeneratorApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        System.out.println("-----myURL--->--" + myURL);
         System.out.println("------COMMAND LINE RUNNER --" + torunlocal);
         if (torunlocal.equals("local")) {
             System.out.println("--------hello----world --- IMPORT DAILY--");
