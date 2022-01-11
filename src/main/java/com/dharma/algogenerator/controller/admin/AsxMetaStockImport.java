@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
@@ -134,10 +136,10 @@ public class AsxMetaStockImport {
 
         log.info("-----------------INSERT -------------- " + code);
 
-        log.info("-----------------URI -------------- " + uri);
+        //  log.info("-----------------URI -------------- " + uri);
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
+        //System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
         CoreData node = null;
         node = mapper.readValue(new URL(uri), CoreData.class);
         node.setDate(date);
@@ -166,15 +168,25 @@ public class AsxMetaStockImport {
             log.info("-----------------IMPORT START-------------- ");
             //allasxcodes.forEach((a)-> System.out.println("----codes--:"+a));
             runningStatus.setImportstatus("running");
+            AtomicInteger count = new AtomicInteger();
+            AtomicInteger number = new AtomicInteger();
+            ArrayList list = new ArrayList<String>();
             allasxcodes.stream()
 
                        .forEach((a) -> {
                            try {
+                               if (count.incrementAndGet() > 900) {
+                                   System.out.println("----SLEEP 1 MINUTE --:");
+                                   TimeUnit.MINUTES.sleep(1);
+                                   count.set(0);
+                               }
                                //     TimeUnit.SECONDS.sleep(20);
                                //System.out.println("----ASX import data  --:"+a);
                                insertdata(a, date);
+                               //    System.out.println("----NO--:" + number.incrementAndGet());
                            } catch (Exception e) {
-                               System.out.println("----ASX import data  --:" + e);
+                               list.add(a);
+                               System.out.println("---ERROR--ASX import data  --:" + a + " ---- " + e);
                            }
 
                        });
@@ -186,6 +198,7 @@ public class AsxMetaStockImport {
             log.info("-----------------IMPORT END -------------- " + start + " --- END ----" + end);
             runningStatus.setImportstatus("completed");
             System.out.println("----RUN  CALC data  --:");
+            System.out.println("Error stocks :" + list);
 
 //            runningStatus.setAveragestatus("running");
 //            calcAverage.run();
@@ -207,10 +220,10 @@ public class AsxMetaStockImport {
 
             System.out.println("----ASX Algo    ALL DONE --:");
 
-            notification.sendMsg("Algo", " Algo run ok");
+            // notification.sendMsg("Algo", " Algo run ok");
 
-            runningStatus.setAlgostatus("completed");
-            System.out.println("----REST --:");
+            //  runningStatus.setAlgostatus("completed");
+            System.out.println("----REST CALL-:");
 
             Unirest.get("http://192.168.0.10:10100/scheduler/rowan");
 
