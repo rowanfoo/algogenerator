@@ -108,7 +108,12 @@ public class CoreData {
     @JsonSetter("code")
     public void setCodeJSON(String code) {
         System.out.println("------------setCodeJSON : " + code);
-        this.code = code + ".AX";
+        if (code.indexOf(".") > 0) {
+            this.code = code.substring(0, code.indexOf(".")) + ".AX";
+        } else {
+            this.code = code + ".AX";
+        }
+
 
     }
 

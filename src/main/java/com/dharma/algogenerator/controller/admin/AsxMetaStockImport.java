@@ -183,7 +183,7 @@ public class AsxMetaStockImport {
                                //     TimeUnit.SECONDS.sleep(20);
                                //System.out.println("----ASX import data  --:"+a);
                                insertdata(a, date);
-                               //    System.out.println("----NO--:" + number.incrementAndGet());
+                               System.out.println("----NO--:" + number.incrementAndGet());
                            } catch (Exception e) {
                                list.add(a);
                                System.out.println("---ERROR--ASX import data  --:" + a + " ---- " + e);
@@ -225,7 +225,7 @@ public class AsxMetaStockImport {
             //  runningStatus.setAlgostatus("completed");
             System.out.println("----REST CALL-:");
 
-            Unirest.get("http://192.168.0.10:10100/scheduler/rowan");
+            //    Unirest.get("http://192.168.0.10:10100/scheduler/rowan");
 
 
             System.out.println("----REST DONE--:");
