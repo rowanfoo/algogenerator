@@ -225,7 +225,7 @@ public class AsxMetaStockImport {
             //  runningStatus.setAlgostatus("completed");
             System.out.println("----REST CALL-:");
 
-            //    Unirest.get("http://192.168.0.10:10100/scheduler/rowan");
+            Unirest.get("http://192.168.0.10:10100/scheduler/rowan").asJson();
 
 
             System.out.println("----REST DONE--:");
@@ -265,6 +265,7 @@ public class AsxMetaStockImport {
 
 
 //            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j:8080/scheduler/rowan").asJson();
+//            HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
             HttpResponse<JsonNode> jsonNodeHttpResponse = Unirest.get("http://ta4j-nodeport:8080/scheduler/rowan").asJson();
 
             System.out.println("------------------------Scheduler -1--------------" + jsonNodeHttpResponse.getStatus());
