@@ -2,6 +2,8 @@ package com.dharma.algogenerator.controller.admin;
 
 
 import com.dharma.algogenerator.data.entity.CoreData;
+import com.dharma.algogenerator.data.entity.CoreStock;
+import com.dharma.algogenerator.data.entity.Fundamental;
 import com.dharma.algogenerator.data.repo.DataRepo;
 import com.dharma.algogenerator.data.repo.FundamentalRepo;
 import com.dharma.algogenerator.dto.RunningStatus;
@@ -24,6 +26,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -225,7 +228,8 @@ public class AsxMetaStockImport {
             //  runningStatus.setAlgostatus("completed");
             System.out.println("----REST CALL-:");
 
-            Unirest.get("http://192.168.0.10:10100/scheduler/rowan").asJson();
+            Unirest.get("http://192.168.68.10:10100/scheduler/rowan").asJson();
+            Unirest.get("http://192.168.68.10:10150/portfolio/rulesmanager").asJson();
 
 
             System.out.println("----REST DONE--:");
@@ -281,5 +285,48 @@ public class AsxMetaStockImport {
         System.out.println("------------------------Scheduler DONE---------------");
 
     }
+
+
+    public void importAllFund() throws Exception {
+        allasxcodes.stream()
+
+                .forEach((a) -> {
+
+
+            try {
+                insertfund(a);
+                TimeUnit.SECONDS.sleep(10);
+            } catch (Exception e) {
+                System.out.println("err---" + e);
+            }
+
+        });
+
+        // } catch (Exception e) {
+        //   System.out.println("err---" + e);
+        // }
+
+    }
+
+
+    private void insertfund(String code) throws Exception {
+
+        final String uri = "https://www.asx.com.au/asx/1/share/" + code;
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        System.out.println("----ASX import RUN !!!insertdata!!  --:" + uri);
+
+
+        Fundamental data = mapper.readValue(new URL(uri), Fundamental.class);
+        System.out.println("----data done---FUND --:" + data);
+
+        fundamentalRepo.save(data);
+
+
+    }
+
+
+
 
 }

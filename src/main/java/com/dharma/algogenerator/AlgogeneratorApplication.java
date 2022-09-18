@@ -11,7 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.LocalDate;
@@ -21,7 +23,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 @SpringBootApplication
-
 @EnableScheduling
 @EnableCaching
 @Slf4j
@@ -30,6 +31,8 @@ public class AlgogeneratorApplication implements CommandLineRunner {
     DataRepo datarepo;
     @Autowired
     StockRepo stock;
+    @Autowired
+    private ApplicationContext context;
 
     @Value("${holidays}")
     String holidays;
@@ -85,14 +88,21 @@ public class AlgogeneratorApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("-----args--->--" + args[0]);
 
-        System.out.println("-----myURL--->--" + myURL);
         System.out.println("------COMMAND LINE RUNNER --" + torunlocal);
         if (torunlocal.equals("local")) {
             System.out.println("--------hello----world --- IMPORT DAILY--");
             LocalDateTime start = LocalDateTime.now();
             asxMetaStockImport.importAllData();
+            System.exit(SpringApplication.exit(context, () -> 0));
         }
 
+        if (torunlocal.equals("fund")) {
+            System.out.println("--------hello------ IMPORT FUND--");
+            LocalDateTime start = LocalDateTime.now();
+            asxMetaStockImport.importAllFund();
+            System.exit(SpringApplication.exit(context, () -> 0));
+        }
     }
 }
