@@ -105,6 +105,20 @@ public class CoreData {
 //
 //  }
 
+
+    @JsonSetter("date")
+    public void setDateJSON(String date) {
+        // System.out.println("------------setDateJSON : " + date);
+        this.date = LocalDate.parse(date);
+//        if (code.indexOf(".") > 0) {
+//            this.code = code.substring(0, code.indexOf(".")) + ".AX";
+//        } else {
+//            this.code = code + ".AX";
+//        }
+
+
+    }
+
     @JsonSetter("code")
     public void setCodeJSON(String code) {
         System.out.println("------------setCodeJSON : " + code);
